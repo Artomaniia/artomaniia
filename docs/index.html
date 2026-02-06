@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Факты про котов</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(900px 600px at 20% 10%, #1f2937, var(--bg));
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    header {
+      display: flex; gap: 14px; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0; font-size: 28px; letter-spacing: .2px; }
+    .note { margin: 6px 0 0; color: var(--muted); }
+    .badge {
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(17,24,39,.55);
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: rgba(17,24,39,.75);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      backdrop-filter: blur(6px);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+    .controls {
+      margin: 16px 0 10px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      align-items: center; justify-content: space-between;
+    }
+    button {
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(17,24,39,.55);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform .08s ease, border-color .2s ease;
+    }
+    button:hover { border-color: rgba(34,197,94,.55); }
+    button:active { transform: translateY(1px); }
+    .factline {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+    }
+    .factline b { color: var(--accent); }
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Факты про котов 🐾</h1>
+        <p class="note">Простая HTML-страница: карточки + кнопка “случайный факт”.</p>
+      </div>
+      <div class="badge" id="countBadge">Фактов: 0</div>
+    </header>
+
+    <div class="controls">
+      <button id="randomBtn" type="button">Показать случайный факт</button>
+      <button id="toggleBtn" type="button">Скрыть/показать карточки</button>
+    </div>
+
+    <div class="factline" id="randomFactBox" aria-live="polite">
+      <b>Случайный факт:</b> нажми кнопку выше 🙂
+    </div>
+
+    <main class="grid" id="factsGrid">
+      <!-- Карточки будут добавлены скриптом -->
+    </main>
+
+    <footer>
+      Подсказка: сохрани как <code>cats.html</code> и открой в браузере.
+    </footer>
+  </div>
+
+  <script>
+    const facts = [
+      {
+        title: "Усы — «сенсоры»",
+        text: "Вибриссы помогают коту ориентироваться и оценивать расстояния, особенно в темноте."
+      },
+      {
+        title: "Мурлыканье",
+        text: "Коты мурлычут не только от удовольствия — иногда так они успокаиваются или снимают стресс."
+      },
+      {
+        title: "Сон чемпиона",
+        text: "В среднем коты спят значительную часть суток и часто активнее всего утром и вечером."
+      },
+      {
+        title: "Прыжки",
+        text: "Коты отлично прыгают благодаря сильным задним лапам и гибкому позвоночнику."
+      },
+      {
+        title: "Уши-радар",
+        text: "Кошачьи уши могут поворачиваться, чтобы точнее «ловить» звук и определять его источник."
+      },
+      {
+        title: "Зрение",
+        text: "Коты хорошо видят при слабом освещении, но хуже различают мелкие детали на очень близком расстоянии."
+      }
+    ];
+
+    const grid = document.getElementById("factsGrid");
+    const badge = document.getElementById("countBadge");
+    const randomBtn = document.getElementById("randomBtn");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const randomBox = document.getElementById("randomFactBox");
+
+    function renderCards() {
+      grid.innerHTML = "";
+      facts.forEach((f) => {
+        const card = document.createElement("section");
+        card.className = "card";
+        card.innerHTML = `<h2>${f.title}</h2><p>${f.text}</p>`;
+        grid.appendChild(card);
+      });
+      badge.textContent = `Фактов: ${facts.length}`;
+    }
+
+    function showRandomFact() {
+      const i = Math.floor(Math.random() * facts.length);
+      randomBox.innerHTML = `<b>Случайный факт:</b> ${facts[i].text}`;
+    }
+
+    let gridVisible = true;
+    function toggleGrid() {
+      gridVisible = !gridVisible;
+      grid.style.display = gridVisible ? "grid" : "none";
+      toggleBtn.textContent = gridVisible ? "Скрыть карточки" : "Показать карточки";
+    }
+
+    renderCards();
+    toggleBtn.textContent = "Скрыть карточки";
+
+    randomBtn.addEventListener("click", showRandomFact);
+    toggleBtn.addEventListener("click", toggleGrid);
+  </script>
+</body>
+</html>
